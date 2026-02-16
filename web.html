@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brainrot Item Store</title>
+  <style>
+    :root { --bg:#0f172a; --panel:#020617; --border:#1f2937; --text:#e5e7eb; --blue:#2563eb; --green:#16a34a; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    header{background:var(--panel);padding:22px;text-align:center;border-bottom:1px solid var(--border)}
+    header h1{margin:0;font-size:28px}
+    .container{max-width:1100px;margin:auto;padding:20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 10px 25px rgba(0,0,0,.4)}
+    .card img{width:100%;height:170px;object-fit:cover;border-radius:10px;background:#111827}
+    .price{font-size:18px;font-weight:bold;margin:8px 0}
+    .btn{width:100%;padding:10px;border-radius:10px;border:none;cursor:pointer;font-weight:bold;color:white;margin-top:6px}
+    .buy{background:var(--blue)} .offer{background:var(--green)} .btn:hover{opacity:.92}
+    .panel{margin-top:30px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px}
+    input,textarea{width:100%;padding:10px;margin-top:8px;margin-bottom:14px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text)}
+    .hidden{display:none}
+    footer{opacity:.7;text-align:center;padding:20px}
+  </style>
+
+  <!-- EmailJS (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    // Replace with your public key from EmailJS dashboard
+    (function(){ try{ emailjs.init("oVcD5Ax1XkW7zNzoR"); }catch(e){} })();
+  </script>
+</head>
+<body>
+<header>
+  <h1>Brainrot Item Store</h1>
+  <p>Buy or send an offer</p>
+</header>
+
+<div class="container">
+  <div class="grid" id="productGrid"></div>
+
+  <!-- OFFER FORM -->
+  <div class="panel hidden" id="offerPanel">
+    <h2>Send Offer</h2>
+    <form id="offerForm">
+      <input name="item" id="offerItem" readonly />
+      <input name="discord" placeholder="Your Discord username" required />
+      <input name="offer_price" placeholder="Your offer amount" required />
+      <textarea name="message" placeholder="Extra message"></textarea>
+      <button class="btn offer" type="submit">Send Offer</button>
+    </form>
+  </div>
+</div>
+
+<footer>© <span id="year"></span> Brainrot Store</footer>
+
+<script>
+// -----------------------------
+// HOW TO ADD PICTURES
+// 1) Create a folder next to this file called: images
+// 2) Put your images inside it, e.g. images/pack1.jpg
+// 3) Update the image field below for each product
+// -----------------------------
+
+const PRODUCTS = [
+  { name: 'Brainrot Pack #1', price: 6, image: 'images/pack1.jpg' },
+  { name: 'Brainrot Pack #2', price: 10, image: 'images/pack2.jpg' },
+  { name: 'VIP Brainrot Bundle', price: 25, image: 'images/vip.jpg' }
+];
+
+const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1472781096864317522/Rfn2DnbH2BjzNrCoK-kHl9agwPmY2L4g8xQJFAkvSUa7_xTx1tyHmuauvthci3mZmcB';
+
+const grid = document.getElementById('productGrid');
+PRODUCTS.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/600x340?text=Add+Your+Image'">
+    <h3>${p.name}</h3>
+    <div class="price">$${p.price}</div>
+    <button class="btn buy" onclick="openOffer('${p.name}')">Buy</button>
+    <button class="btn offer" onclick="openOffer('${p.name}')">Make Offer</button>
+  `;
+  grid.appendChild(card);
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+function openOffer(item) {
+  document.getElementById('offerPanel').classList.remove('hidden');
+  document.getElementById('offerItem').value = item;
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+document.getElementById('offerForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const data = { item:this.item.value, discord:this.discord.value, offer_price:this.offer_price.value, message:this.message.value };
+
+  // EmailJS (optional)
+  try{ await emailjs.send('service_dv62mxd','template_b5j6qic', data); }catch(e){ console.log('Email skipped'); }
+
+  // Discord webhook
+  try{
+    await fetch(DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ content:`NEW OFFER\nItem: ${data.item}\nDiscord: ${data.discord}\nOffer: ${data.offer_price}\nMessage: ${data.message}` })});
+  }catch(e){ alert('Webhook not set yet.'); }
+
+  alert('Offer sent!');
+  this.reset();
+});
+</script>
+</body>
+</html>
