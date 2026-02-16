@@ -36,11 +36,9 @@
 </header>
 
 <div class="container">
+  
   <div class="grid" id="productGrid"></div>
-
   <!-- OFFER FORM -->
-  <div class="grid" id="productGrid"></div>
-
   <div class="panel hidden" id="offerPanel">
     <h2>Send Offer</h2>
     <form id="offerForm">
@@ -71,6 +69,11 @@ const PRODUCTS = [
 
 const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1472781096864317522/Rfn2DnbH2BjzNrCoK-kHl9agwPmY2L4g8xQJFAkvSUa7_xTx1tyHmuauvthci3mZmcBZ'
 B';
+const PRODUCTS = [
+{ name: "Brainrot Pack #1", price: 6, image: "images/pack1.jpg" },
+{ name: "Brainrot Pack #2", price: 10, image: "images/pack2.jpg" },
+{ name: "VIP Brainrot Bundle", price: 25, image: "images/vip.jpg" }
+];
 
 const grid = document.getElementById('productGrid');
 PRODUCTS.forEach(p => {
@@ -111,6 +114,7 @@ document.getElementById('offerForm').addEventListener('submit', async function(e
 </script>
 </body>
 </html>
+
 
 
 
