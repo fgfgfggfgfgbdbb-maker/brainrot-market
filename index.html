@@ -24,11 +24,10 @@
   </style>
 
   <!-- EmailJS (optional) -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script>
+ 
+
     // Replace with your public key from EmailJS dashboard
-    (function(){ try{ emailjs.init("oVcD5Ax1XkW7zNzoR"); }catch(e){} })();
-  </script>
+    
 </head>
 <body>
 <header>
@@ -98,7 +97,6 @@ document.getElementById('offerForm').addEventListener('submit', async function(e
   const data = { item:this.item.value, discord:this.discord.value, offer_price:this.offer_price.value, message:this.message.value };
 
   // EmailJS (optional)
-  try{ await emailjs.send('service_dv62mxd','template_b5j6qic', data); }catch(e){ console.log('Email skipped'); }
 
   // Discord webhook
   try{
@@ -111,4 +109,5 @@ document.getElementById('offerForm').addEventListener('submit', async function(e
 </script>
 </body>
 </html>
+
 
