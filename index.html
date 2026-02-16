@@ -1,9 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brainrot Item Store</title>
+
   <style>
     :root { --bg:#0f172a; --panel:#020617; --border:#1f2937; --text:#e5e7eb; --blue:#2563eb; --green:#16a34a; }
     *{box-sizing:border-box}
@@ -16,18 +18,27 @@
     .card img{width:100%;height:170px;object-fit:cover;border-radius:10px;background:#111827}
     .price{font-size:18px;font-weight:bold;margin:8px 0}
     .btn{width:100%;padding:10px;border-radius:10px;border:none;cursor:pointer;font-weight:bold;color:white;margin-top:6px}
-    .buy{background:var(--blue)} .offer{background:var(--green)} .btn:hover{opacity:.92}
+    .buy{background:var(--blue)}
+    .offer{background:var(--green)}
+    .btn:hover{opacity:.92}
     .panel{margin-top:30px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px}
     input,textarea{width:100%;padding:10px;margin-top:8px;margin-bottom:14px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text)}
     .hidden{display:none}
     footer{opacity:.7;text-align:center;padding:20px}
   </style>
 
+</head>
+
+<body>
+
+<header>
+  <h1>Brainrot Item Store</h1>
+  <p>Buy or send an offer</p>
+</header>
 
 <div class="container">
-  
   <div class="grid" id="productGrid"></div>
-  <!-- OFFER FORM -->
+
   <div class="panel hidden" id="offerPanel">
     <h2>Send Offer</h2>
     <form id="offerForm">
@@ -43,15 +54,7 @@
 <footer>© <span id="year"></span> Brainrot Store</footer>
 
 <script>
-  const PRODUCTS = [
 window.addEventListener('DOMContentLoaded', () => {
-
-// -----------------------------
-// HOW TO ADD PICTURES
-// 1) Create a folder next to this file called: images
-// 2) Put your images inside it, e.g. images/pack1.jpg
-// 3) Update the image field below for each product
-// -----------------------------
 
 const PRODUCTS = [
   { name: 'Brainrot Pack #1', price: 6, image: 'images/pack1.jpg' },
@@ -59,15 +62,10 @@ const PRODUCTS = [
   { name: 'VIP Brainrot Bundle', price: 25, image: 'images/vip.jpg' }
 ];
 
-const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1472781096864317522/Rfn2DnbH2BjzNrCoK-kHl9agwPmY2L4g8xQJFAkvSUa7_xTx1tyHmuauvthci3mZmcBZ'
-B';
-const PRODUCTS = [
-{ name: "Brainrot Pack #1", price: 6, image: "images/pack1.jpg" },
-{ name: "Brainrot Pack #2", price: 10, image: "images/pack2.jpg" },
-{ name: "VIP Brainrot Bundle", price: 25, image: "images/vip.jpg" }
-];
+const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1472781096864317522/Rfn2DnbH2BjzNrCoK-kHl9agwPmY2L4g8xQJFAkvSUa7_xTx1tyHmuauvthci3mZmcBZ';
 
 const grid = document.getElementById('productGrid');
+
 PRODUCTS.forEach(p => {
   const card = document.createElement('div');
   card.className = 'card';
@@ -83,32 +81,43 @@ PRODUCTS.forEach(p => {
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
-function openOffer(item) {
+window.openOffer = function(item) {
   document.getElementById('offerPanel').classList.remove('hidden');
   document.getElementById('offerItem').value = item;
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-}
+};
 
 document.getElementById('offerForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  const data = { item:this.item.value, discord:this.discord.value, offer_price:this.offer_price.value, message:this.message.value };
 
-  // EmailJS (optional)
+  const data = {
+    item:this.item.value,
+    discord:this.discord.value,
+    offer_price:this.offer_price.value,
+    message:this.message.value
+  };
 
-  // Discord webhook
   try{
-    await fetch(DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ content:`NEW OFFER\nItem: ${data.item}\nDiscord: ${data.discord}\nOffer: ${data.offer_price}\nMessage: ${data.message}` })});
-  }catch(e){ alert('Webhook not set yet.'); }
+    await fetch(DISCORD_WEBHOOK, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        content:`NEW OFFER
+Item: ${data.item}
+Discord: ${data.discord}
+Offer: ${data.offer_price}
+Message: ${data.message}`
+      })
+    });
+    alert('Offer sent!');
+    this.reset();
+  }catch(e){
+    alert('Webhook not set correctly.');
+  }
+});
 
-  alert('Offer sent!');
-  this.reset();
 });
 </script>
+
 </body>
 </html>
-
-
-
-
-
-
